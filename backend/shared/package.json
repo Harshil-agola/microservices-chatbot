@@ -1,0 +1,27 @@
+{
+  "name": "@shared/redis",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "main": "./dist/redis/index.js",
+  "types": "./dist/redis/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/redis/index.d.ts",
+      "default": "./dist/redis/index.js"
+    },
+    "./redis": {
+      "types": "./dist/redis/index.d.ts",
+      "default": "./dist/redis/index.js"
+    }
+  },
+  "dependencies": {
+    "ioredis": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "typescript": "^7.0.2"
+  }
+}

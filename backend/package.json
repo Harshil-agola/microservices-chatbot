@@ -1,0 +1,15 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:all": "pnpm --parallel dev",
+    "dev:auth": "pnpm --filter auth dev",
+    "dev:gateway": "pnpm --filter gateway dev",
+    "install:all": "pnpm install",
+    "build:all": "pnpm --recursive build",
+    "build": "pnpm --recursive build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
