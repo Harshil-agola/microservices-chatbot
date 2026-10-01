@@ -109,6 +109,67 @@ importers:
         specifier: ^7.0.2
         version: 7.0.2
 
+  services/chat:
+    dependencies:
+      '@shared/redis':
+        specifier: workspace:*
+        version: link:../../shared
+      cookie-parser:
+        specifier: ^1.4.7
+        version: 1.4.7
+      cors:
+        specifier: ^2.8.6
+        version: 2.8.6
+      dotenv:
+        specifier: ^18.0.4
+        version: 18.0.4
+      express:
+        specifier: ^5.2.1
+        version: 5.2.1
+      firebase-admin:
+        specifier: ^14.5.0
+        version: 14.5.0
+      ioredis:
+        specifier: ^6.0.0
+        version: 6.0.0
+      mongodb:
+        specifier: ^7.7.0
+        version: 7.7.0
+      mongoose:
+        specifier: ^9.10.2
+        version: 9.10.3
+      morgan:
+        specifier: ^1.12.1
+        version: 1.12.1
+      zod:
+        specifier: ^4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@types/cookie-parser':
+        specifier: ^1.4.10
+        version: 1.4.10(@types/express@5.0.6)
+      '@types/cors':
+        specifier: ^2.8.19
+        version: 2.8.19
+      '@types/express':
+        specifier: ^5.0.6
+        version: 5.0.6
+      '@types/express-http-proxy':
+        specifier: ^1.6.7
+        version: 1.6.7
+      '@types/node':
+        specifier: ^26.6.3
+        version: 26.6.3
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@26.6.3)(typescript@7.0.2)
+      tsx:
+        specifier: ^4.23.15
+        version: 4.23.15
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
+
   shared:
     dependencies:
       ioredis:
@@ -1630,6 +1691,9 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  zod@4.6.5:
+    resolution: {integrity: sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==}
 
 snapshots:
 
@@ -3269,3 +3333,5 @@ snapshots:
 
   yocto-queue@0.1.0:
     optional: true
+
+  zod@4.6.5: {}

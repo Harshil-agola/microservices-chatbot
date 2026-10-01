@@ -1,7 +1,8 @@
 import express, { type Application, type Request, type Response } from "express";
-import proxy from "express-http-proxy";
 import cors from "cors";
 import { ENV_CONFIG } from "./config/env.js";
+import { proxyWithHeader } from "./utils/proxyWithHeader.js";
+import { protectedRoute } from "./middleware/auth.middleware.js";
 
 const app: Application = express();
 
@@ -16,6 +17,7 @@ app.get("/", (_req: Request, res: Response) => {
     return res.status(200).json({ message: "Welcome to the API" });
 })
 
-app.use('/api/auth', proxy(ENV_CONFIG.AUTH_SERVICE_URL));
+app.use('/api/auth', proxyWithHeader(ENV_CONFIG.AUTH_SERVICE_URL));
+app.use('/api/chat', protectedRoute, proxyWithHeader(ENV_CONFIG.CHAT_SERVICE_URL));
 
 export default app;

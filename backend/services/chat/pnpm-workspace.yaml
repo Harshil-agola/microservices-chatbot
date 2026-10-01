@@ -1,0 +1,8 @@
+allowBuilds:
+  '@firebase/util': false
+  esbuild: false
+  protobufjs: false
+ignoredBuiltDependencies:
+  - '@firebase/util'
+  - esbuild
+  - protobufjs

@@ -2,17 +2,20 @@ import type { NextFunction, Request, Response } from "express"
 import redis from "@shared/redis"
 
 interface RequestType extends Request {
-    user: {
+    user?: {
+        userId: string;
         firebaseUID: string;
         name: string;
         email: string;
         profileImage?: string;
-    }
+        [key: string]: any;
+    };
 }
 
 const protectedRoute = async (req: RequestType, res: Response, next: NextFunction) => {
     try {
         const sessionId = req.cookies?.session
+
         if (!sessionId) {
             return res.status(401).json({ status: false, message: "unauthorized" });
         }
