@@ -11,6 +11,10 @@ export const login = async (req: Request, res: Response) => {
     try {
         const { token } = req.body;
 
+        if (!token) {
+            return res.status(400).json({ status: false, message: "Authentication token is required" });
+        }
+
         const decodedUser = await getAuth(app).verifyIdToken(token);
 
         let user = await User.findOne({
@@ -50,10 +54,19 @@ export const login = async (req: Request, res: Response) => {
 
         return res.status(200).json({ status: true, data: { user } });
     } catch (error) {
-        if (error instanceof Error) {
-            return res.status(500).json({ status: false, message: error.message || "Something went wrong while login process" });
+        console.error("Login error:", error);
+        if (error && typeof error === "object" && "code" in error) {
+            const firebaseErrorCode = (error as { code: string }).code;
+            if (
+                firebaseErrorCode.includes("auth/id-token-expired") ||
+                firebaseErrorCode.includes("auth/argument-error") ||
+                firebaseErrorCode.includes("auth/invalid-id-token")
+            ) {
+                return res.status(401).json({ status: false, message: "Invalid or expired authentication token" });
+            }
         }
-        return res.status(500).json({ status: false, message: "Failed to login" });
+
+        return res.status(500).json({ status: false, message: "An unexpected error occurred during login" });
     }
 };
 
@@ -72,34 +85,30 @@ export const logout = async (req: Request, res: Response) => {
 
         return res.status(200).json({ status: true, message: "Logged out successfully" });
     } catch (error) {
-        if (error instanceof Error) {
-            return res.status(500).json({ status: false, message: error.message || "Something went wrong while logout process" });
-        }
+        console.error("Logout error:", error);
         return res.status(500).json({ status: false, message: "Failed to logout" });
     }
-}
+};
 
 export const getMe = async (req: Request, res: Response) => {
     try {
         const sessionId = req.cookies?.session;
 
         if (!sessionId) {
-            return res.status(401).json({ status: false, message: "unauthorized" });
+            return res.status(401).json({ status: false, message: "Unauthorized" });
         }
 
         const session = await redis.get(`session:${sessionId}`);
 
         if (!session) {
-            return res.status(401).json({ status: false, message: "unauthorized" });
+            return res.status(401).json({ status: false, message: "Session expired or invalid" });
         }
 
         const sessionData = JSON.parse(session);
         return res.status(200).json({ status: true, data: { user: sessionData } });
 
     } catch (error) {
-        if (error instanceof Error) {
-            return res.status(500).json({ status: false, message: error.message || "Something went wrong while get me process" });
-        }
-        return res.status(500).json({ status: false, message: "Failed to get me" });
+        console.error("Get me error:", error);
+        return res.status(500).json({ status: false, message: "Failed to get user profile" });
     }
-}
+};
