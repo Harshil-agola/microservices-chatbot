@@ -4,10 +4,12 @@ import { useState } from "react";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "@/utils/firebase";
 import { handleLoginAction } from "@/actions/auth.actions";
+import { useRouter } from "next/navigation";
 
 export const OauthButton = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const router = useRouter()
 
     const handleSignIn = async () => {
         try {
@@ -22,9 +24,7 @@ export const OauthButton = () => {
             if (!response?.status) {
                 throw new Error(response?.message || "Failed to authenticate with server");
             }
-
-            console.log("Authentication successful:", response.data);
-            return response.data;
+            router.push("/")
         } catch (err: unknown) {
             const errorMessage = err instanceof Error ? err.message : "Something went wrong during sign-in";
             console.error("Sign-in error:", err);

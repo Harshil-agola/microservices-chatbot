@@ -34,6 +34,8 @@ export const login = async (req: Request, res: Response) => {
                 userId: user._id,
                 firebaseUID: user.firebaseUID,
                 email: user.email,
+                name: user.name,
+                profileImage: user.profileImage
             }),
             "EX",
             SESSION_TTL_SECONDS
@@ -54,3 +56,50 @@ export const login = async (req: Request, res: Response) => {
         return res.status(500).json({ status: false, message: "Failed to login" });
     }
 };
+
+
+export const logout = async (req: Request, res: Response) => {
+    try {
+        const sessionId = req.cookies?.session
+
+        if (!sessionId) {
+            return res.status(400).json({ status: false, message: "Session not found" });
+        }
+
+        await redis.del(`session:${sessionId}`);
+
+        res.clearCookie("session");
+
+        return res.status(200).json({ status: true, message: "Logged out successfully" });
+    } catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ status: false, message: error.message || "Something went wrong while logout process" });
+        }
+        return res.status(500).json({ status: false, message: "Failed to logout" });
+    }
+}
+
+export const getMe = async (req: Request, res: Response) => {
+    try {
+        const sessionId = req.cookies?.session;
+
+        if (!sessionId) {
+            return res.status(401).json({ status: false, message: "unauthorized" });
+        }
+
+        const session = await redis.get(`session:${sessionId}`);
+
+        if (!session) {
+            return res.status(401).json({ status: false, message: "unauthorized" });
+        }
+
+        const sessionData = JSON.parse(session);
+        return res.status(200).json({ status: true, data: { user: sessionData } });
+
+    } catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ status: false, message: error.message || "Something went wrong while get me process" });
+        }
+        return res.status(500).json({ status: false, message: "Failed to get me" });
+    }
+}

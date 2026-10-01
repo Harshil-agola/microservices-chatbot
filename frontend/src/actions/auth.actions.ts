@@ -1,18 +1,11 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { API_ENDPOINTS } from "@/constants/api.constants";
+import { apiClient } from "@/utils/api-client";
 
 export const handleLoginAction = async (token: string) => {
     try {
-        const response = await fetch(API_ENDPOINTS.AUTH.LOGIN, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ token }),
-        });
-
+        const response = await apiClient.auth.login(token);
         const result = await response.json();
 
         const setCookie = response.headers.get("set-cookie");
@@ -36,6 +29,19 @@ export const handleLoginAction = async (token: string) => {
         return {
             status: false,
             message: error instanceof Error ? error.message : "Failed to authenticate with backend",
+        };
+    }
+};
+
+export const getCurrentUser = async () => {
+    try {
+        const response = await apiClient.auth.getMe();
+        return await response.json();
+    } catch (error) {
+        console.error("Backend get me error:", error);
+        return {
+            status: false,
+            message: error instanceof Error ? error.message : "Failed to get current user",
         };
     }
 };

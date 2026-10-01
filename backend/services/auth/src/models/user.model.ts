@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-interface UserTypes extends Document {
+export interface UserTypes extends Document {
   firebaseUID: string;
   name: string;
   email: string;
