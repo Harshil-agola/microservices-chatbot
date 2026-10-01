@@ -26,8 +26,26 @@ export const OauthButton = () => {
             }
             router.push("/")
         } catch (err: unknown) {
-            const errorMessage = err instanceof Error ? err.message : "Something went wrong during sign-in";
             console.error("Sign-in error:", err);
+
+            // Handle client-side Firebase Auth errors
+            if (err && typeof err === "object" && "code" in err) {
+                const firebaseCode = (err as { code: string }).code;
+                if (firebaseCode === "auth/popup-closed-by-user") {
+                    setError("Popup closed by the user");
+                    return;
+                }
+                if (firebaseCode === "auth/popup-blocked") {
+                    setError("Sign-in popup was blocked by your browser. Please allow popups and try again.");
+                    return;
+                }
+                if (firebaseCode === "auth/cancelled-popup-request") {
+                    setError("Sign-in was cancelled");
+                    return;
+                }
+            }
+
+            const errorMessage = err instanceof Error ? err.message : "Something went wrong during sign-in";
             setError(errorMessage);
         } finally {
             setIsLoading(false);
