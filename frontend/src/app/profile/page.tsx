@@ -13,9 +13,9 @@ export default async function ProfilePage() {
 
     return (
         <div className="flex flex-col items-center justify-center h-screen gap-4">
-            <h1 className="text-white">{user?.data?.user.name}</h1>
-            <p className="text-white">{user?.data?.user.email}</p>
-            <p className="text-white">{user?.data?.user.status}</p>
+            <h1>{user?.data?.user.name}</h1>
+            <p>{user?.data?.user.email}</p>
+            <p>{user?.data?.user.status}</p>
             <Image src={user?.data?.user?.profileImage} alt={`profile-${user?.data?.user.id}`} width={100} height={100} />
             <LogoutButton />
         </div>
