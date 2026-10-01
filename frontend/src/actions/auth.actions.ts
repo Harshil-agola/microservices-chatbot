@@ -45,3 +45,26 @@ export const getCurrentUser = async () => {
         };
     }
 };
+
+export const logout = async (_prevState?: unknown) => {
+    try {
+        const response = await apiClient.auth.logout();
+
+        const cookieStore = await cookies();
+        cookieStore.delete("session");
+
+        if (!response.ok) {
+            throw new Error("Failed to logout");
+        }
+        return {
+            status: true,
+            message: "Logout successful",
+        };
+    } catch (error) {
+        console.error("Backend logout error:", error);
+        return {
+            status: false,
+            message: error instanceof Error ? error.message : "Failed to logout",
+        };
+    }
+};

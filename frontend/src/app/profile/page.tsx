@@ -1,4 +1,5 @@
 import { getCurrentUser } from "@/actions/auth.actions";
+import { LogoutButton } from "@/components/auth/LogoutButton";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
@@ -16,6 +17,7 @@ export default async function ProfilePage() {
             <p className="text-white">{user?.data?.user.email}</p>
             <p className="text-white">{user?.data?.user.status}</p>
             <Image src={user?.data?.user?.profileImage} alt={`profile-${user?.data?.user.id}`} width={100} height={100} />
+            <LogoutButton />
         </div>
     );
 }
