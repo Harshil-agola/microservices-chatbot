@@ -19,5 +19,6 @@ app.get("/", (_req: Request, res: Response) => {
 
 app.use('/api/auth', proxyWithHeader(ENV_CONFIG.AUTH_SERVICE_URL));
 app.use('/api/chat', protectedRoute, proxyWithHeader(ENV_CONFIG.CHAT_SERVICE_URL));
+app.use('/api/agent', protectedRoute, proxyWithHeader(ENV_CONFIG.AGENT_SERVICE_URL));
 
 export default app;
