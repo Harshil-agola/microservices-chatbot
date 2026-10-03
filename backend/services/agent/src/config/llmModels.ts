@@ -13,7 +13,7 @@ const geminiModel = new ChatGoogle({
     model: "gemini-2.5-flash"
 });
 
-export const getModel = (modelName: "router" | "chat" | "search" | "pdf" | "ppt" | "coding" | "vision") => {
+export const getModel = async (modelName: "router" | "chat" | "search" | "pdf" | "ppt" | "coding" | "vision") => {
     switch (modelName) {
         case "chat":
             return groqModel;

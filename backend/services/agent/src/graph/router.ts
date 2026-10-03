@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { getModel } from "../config/llmModels.js";
 import { agentState } from "./state.js";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
 
 const ROUTER_AGENT_SYSTEM_PROMPT = `
 You are an intelligent routing agent. Your job is to analyze the user's query
@@ -69,29 +70,28 @@ ROUTING RULES:
 `;
 
 export const router = async (state: typeof agentState.State) => {
-    const llm = getModel("router");
-
-    const USER_QUERY = state.prompt;
+    const llm = await getModel("router");
 
     const routeSchema = z.object({
         agent: z.enum(["chat", "coding", "pdf", "ppt", "vision", "search"])
             .describe("The chosen agent to handle the user's query")
     });
 
-    const structuredLlm = llm.withStructuredOutput(routeSchema);
-
-    const response = await structuredLlm.invoke([
-        {
-            role: "system",
-            content: ROUTER_AGENT_SYSTEM_PROMPT,
-        },
-        {
-            role: "user",
-            content: `Route this query to the appropriate agent: ${USER_QUERY}`,
-        },
+    const prompt = ChatPromptTemplate.fromMessages([
+        ["system", ROUTER_AGENT_SYSTEM_PROMPT],
+        ["user", "Route this query to the appropriate agent: {query}"]
     ]);
 
-    console.log("Router Response", response);
+    const structuredLlm = llm.withStructuredOutput(routeSchema);
+
+    const chain = prompt.pipe(structuredLlm);
+
+    const response = await chain.invoke({
+        query: state.prompt
+    });
+
+
+    console.log("Router Agent Response", response);
 
     return {
         ...state,

@@ -109,7 +109,7 @@ export const updateConversation = async (req: Request, res: Response) => {
         const conversation = await Conversation.findOneAndUpdate(
             { _id: conversationId, userId },
             { $set: { title: parseResult.data.title } },
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         ).lean();
 
         if (!conversation) {
@@ -123,8 +123,18 @@ export const updateConversation = async (req: Request, res: Response) => {
             success: true,
             data: conversation,
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error updating conversation:", error);
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({
+                success: false,
+                message: "Database Validation Error",
+                errors: Object.values(error.errors || {}).map((err: any) => ({
+                    field: err.path,
+                    message: err.message
+                }))
+            });
+        }
         return res.status(500).json({
             success: false,
             message: "Internal server error",

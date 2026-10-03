@@ -1,4 +1,8 @@
 import { getCurrentUser } from "@/actions/auth.actions";
+import { getConversations } from "@/actions/chat.actions";
+import { ChatWindow } from "@/components/chatWindow";
+import { Sidebar } from "@/components/sidebar";
+import type { UserType } from "@/types";
 import { redirect } from "next/navigation";
 
 export default async function Home() {
@@ -9,9 +13,13 @@ export default async function Home() {
     redirect("/auth/sign-in")
   }
 
+  const conversations = await getConversations()
+
+
   return (
-    <div className="flex flex-col items-center justify-center h-screen gap-4">
-      <pre className="text-white">{JSON.stringify(user, null, 2)}</pre>
+    <div className="flex h-screen w-full bg-(--bg-color) text-(--primary-text) font-sans overflow-hidden">
+      <Sidebar user={user?.data?.user as UserType} conversations={conversations} />
+      <ChatWindow />
     </div>
   );
 }

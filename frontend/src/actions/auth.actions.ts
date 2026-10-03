@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { apiClient } from "@/utils/api-client";
+import { UserResponse } from "@/types";
 
 export const handleLoginAction = async (token: string) => {
     try {
@@ -33,10 +34,11 @@ export const handleLoginAction = async (token: string) => {
     }
 };
 
-export const getCurrentUser = async () => {
+export const getCurrentUser = async (): Promise<UserResponse | null> => {
     try {
         const response = await apiClient.auth.getMe();
-        return await response.json();
+        const data = await response.json();
+        return data
     } catch (error) {
         console.error("Backend get me error:", error);
         return {
@@ -68,3 +70,5 @@ export const logout = async (_prevState?: unknown) => {
         };
     }
 };
+
+

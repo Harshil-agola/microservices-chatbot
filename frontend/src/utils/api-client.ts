@@ -65,6 +65,15 @@ class ApiClient {
         logout: (options?: RequestInit) =>
             this.post(API_ENDPOINTS.AUTH.LOGOUT, undefined, options),
     };
+
+    readonly chat = {
+        getConversations: (options?: RequestInit) =>
+            this.get(API_ENDPOINTS.CHAT.GET_CONVERSATIONS, options),
+        createConversation: (options?: RequestInit) =>
+            this.post(API_ENDPOINTS.CHAT.CREATE_CONVERSATION, undefined, options),
+        renameConversation: (conversationId: string, title: string, options?: RequestInit) =>
+            this.put(API_ENDPOINTS.CHAT.RENAME_CONVERSATION(conversationId), { title }, options),
+    }
 }
 
 export const apiClient = new ApiClient();

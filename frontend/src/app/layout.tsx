@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Open_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { StoreProvider } from "@/providers/store.provider";
+import { ThemeProvider } from "@/providers/theme.provider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const openSans = Open_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
@@ -21,10 +23,21 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${openSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col" cz-shortcut-listen="true"
-      >{children}</body>
+      <body className="min-h-full flex flex-col" cz-shortcut-listen="true">
+        <StoreProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </StoreProvider>
+      </body>
     </html >
   );
 }

@@ -2,6 +2,7 @@ import express, { type Application, type Request, type Response } from "express"
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { ENV_CONFIG } from "./config/env.js";
+import { agentRoutes } from "./routes/agent.route.js";
 
 const app: Application = express();
 
@@ -12,6 +13,8 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
+
+app.use("/", agentRoutes);
 
 app.get("/", (_req: Request, res: Response) => {
     return res.status(200).json({ message: "Welcome to agent service" });

@@ -13,6 +13,9 @@ importers:
       '@shared/redis':
         specifier: workspace:*
         version: link:../shared
+      cookie-parser:
+        specifier: ^1.4.7
+        version: 1.4.7
       cors:
         specifier: ^2.8.6
         version: 2.8.6
@@ -29,6 +32,9 @@ importers:
         specifier: ^1.12.1
         version: 1.12.1
     devDependencies:
+      '@types/cookie-parser':
+        specifier: ^1.4.10
+        version: 1.4.10(@types/express@5.0.6)
       '@types/cors':
         specifier: ^2.8.19
         version: 2.8.19
