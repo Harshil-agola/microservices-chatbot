@@ -1,0 +1,29 @@
+import { getCurrentUser } from "@/actions/auth.actions";
+import { getConversations } from "@/actions/chat.actions";
+import { Sidebar } from "@/components/sidebar";
+import type { UserType } from "@/types";
+import { redirect } from "next/navigation";
+
+import { GlobalSearchDialog } from "@/components/commons/globalSearchDialog";
+
+export default async function ChatLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    const user = await getCurrentUser();
+
+    if (!user || !user.status) {
+        redirect("/auth/sign-in");
+    }
+
+    const conversations = await getConversations();
+
+    return (
+        <div className="flex h-screen w-full bg-(--bg-color) text-(--primary-text) font-sans overflow-hidden">
+            <Sidebar user={user?.data?.user as UserType} conversations={conversations} />
+            {children}
+            <GlobalSearchDialog />
+        </div>
+    );
+}

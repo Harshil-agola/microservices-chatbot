@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { z } from "zod";
+import { HumanMessage, AIMessage } from "@langchain/core/messages";
 import { ENV_CONFIG } from "../config/env.js";
 import { graph } from "../graph/graph.js";
 
@@ -20,10 +21,11 @@ export const agentController = async (req: Request, res: Response) => {
 
         const { prompt, conversationId } = parseResult.data;
 
-        const gatewayHeaders = {
+        const gatewayHeaders: Record<string, string> = {
             "Content-Type": "application/json",
-            ...(req.headers.authorization ? { "Authorization": req.headers.authorization } : {}),
-            ...(req.headers.cookie ? { "Cookie": req.headers.cookie } : {})
+            ...(req.headers.authorization ? { "Authorization": req.headers.authorization as string } : {}),
+            ...(req.headers.cookie ? { "Cookie": req.headers.cookie as string } : {}),
+            ...(req.headers["x-user-id"] ? { "x-user-id": req.headers["x-user-id"] as string } : {}),
         };
 
 
@@ -37,7 +39,36 @@ export const agentController = async (req: Request, res: Response) => {
             console.error("Failed to save user message:", await userMessageRes.text());
         }
 
-        const result = await graph.invoke({ prompt, conversationId });
+        // Retrieve existing conversation history for memory
+        let historyMessages: any[] = [];
+        try {
+            const historyRes = await fetch(`${ENV_CONFIG.GATEWAY_URL}/api/chat/message/${conversationId}`, {
+                method: "GET",
+                headers: gatewayHeaders,
+            });
+
+            if (historyRes.ok) {
+                const historyData = await historyRes.json();
+                const rawMessages = historyData?.data || [];
+                // Map to LangChain messages (exclude the latest user message which is state.prompt)
+                historyMessages = rawMessages
+                    .slice(0, -1) // exclude the just-saved user message
+                    .slice(-10) // keep last 10 messages for context
+                    .map((msg: any) =>
+                        msg.role === "user"
+                            ? new HumanMessage(msg.content)
+                            : new AIMessage(msg.content)
+                    );
+            }
+        } catch (memErr) {
+            console.error("Failed to load conversation history for memory:", memErr);
+        }
+
+        const result = await graph.invoke({
+            prompt,
+            conversationId,
+            messages: historyMessages
+        });
         const aiResponse = result.aiResponse;
 
         const aiMessageRes = await fetch(`${ENV_CONFIG.GATEWAY_URL}/api/chat/message`, {
@@ -45,8 +76,8 @@ export const agentController = async (req: Request, res: Response) => {
             headers: gatewayHeaders,
             body: JSON.stringify({
                 conversationId,
-                role: "assistant",
-                prompt: aiResponse
+                role: "ai",
+                content: aiResponse
             })
         });
 

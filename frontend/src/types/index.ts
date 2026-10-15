@@ -22,3 +22,12 @@ export interface ConversationType {
     createdAt: Date
     updatedAt: Date
 }
+
+export interface MessageType {
+    _id?: string;
+    conversationId: string;
+    role: "user" | "ai";
+    content: string;
+    createdAt?: string | Date;
+    updatedAt?: string | Date;
+}

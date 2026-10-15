@@ -5,6 +5,8 @@ import { Sidebar } from "@/components/sidebar";
 import type { UserType } from "@/types";
 import { redirect } from "next/navigation";
 
+import { GlobalSearchDialog } from "@/components/commons/globalSearchDialog";
+
 export default async function Home() {
 
   const user = await getCurrentUser()
@@ -20,6 +22,7 @@ export default async function Home() {
     <div className="flex h-screen w-full bg-(--bg-color) text-(--primary-text) font-sans overflow-hidden">
       <Sidebar user={user?.data?.user as UserType} conversations={conversations} />
       <ChatWindow />
+      <GlobalSearchDialog />
     </div>
   );
 }

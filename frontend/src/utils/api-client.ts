@@ -73,7 +73,18 @@ class ApiClient {
             this.post(API_ENDPOINTS.CHAT.CREATE_CONVERSATION, undefined, options),
         renameConversation: (conversationId: string, title: string, options?: RequestInit) =>
             this.put(API_ENDPOINTS.CHAT.RENAME_CONVERSATION(conversationId), { title }, options),
-    }
+        getMessages: (conversationId: string, options?: RequestInit) =>
+            this.get(API_ENDPOINTS.CHAT.GET_MESSAGES(conversationId), options),
+        sendMessage: (data: { conversationId: string; content: string; role: "user" | "ai" }, options?: RequestInit) =>
+            this.post(API_ENDPOINTS.CHAT.SEND_MESSAGE, data, options),
+        searchChats: (query: string, options?: RequestInit) =>
+            this.get(API_ENDPOINTS.CHAT.SEARCH(query), options),
+    };
+
+    readonly ai = {
+        ask: (data: { conversationId: string; prompt: string }, options?: RequestInit) =>
+            this.post(API_ENDPOINTS.AI.ASK, data, options),
+    };
 }
 
 export const apiClient = new ApiClient();

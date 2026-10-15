@@ -3,6 +3,7 @@ import { Open_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/providers/store.provider";
 import { ThemeProvider } from "@/providers/theme.provider";
+import { ThemeToggle } from "@/components/commons/themeToggle";
 
 const openSans = Open_Sans({
   variable: "--font-sans",
@@ -35,6 +36,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             disableTransitionOnChange
           >
             {children}
+            <div className="fixed top-4 right-4 z-50">
+              <ThemeToggle />
+            </div>
           </ThemeProvider>
         </StoreProvider>
       </body>

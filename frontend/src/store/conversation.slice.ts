@@ -5,7 +5,10 @@ export const conversation = createSlice({
     name: "conversation",
     initialState: {
         conversations: [] as ConversationType[],
-        activeConversationId: null as string | null
+        activeConversationId: null as string | null,
+        isSidebarCollapsed: false,
+        sidebarWidth: 280,
+        isSearchOpen: false,
     },
     reducers: {
         setConversations: (state, action: PayloadAction<ConversationType[]>) => {
@@ -23,10 +26,31 @@ export const conversation = createSlice({
         },
         setActiveConversationId: (state, action: PayloadAction<string>) => {
             state.activeConversationId = action.payload;
+        },
+        toggleSidebar: (state) => {
+            state.isSidebarCollapsed = !state.isSidebarCollapsed;
+        },
+        setSidebarCollapsed: (state, action: PayloadAction<boolean>) => {
+            state.isSidebarCollapsed = action.payload;
+        },
+        setSidebarWidth: (state, action: PayloadAction<number>) => {
+            state.sidebarWidth = action.payload;
+        },
+        setSearchOpen: (state, action: PayloadAction<boolean>) => {
+            state.isSearchOpen = action.payload;
         }
     },
 });
 
-export const { setConversations, addConversation, setActiveConversationId, renameConversation } = conversation.actions;
+export const {
+    setConversations,
+    addConversation,
+    setActiveConversationId,
+    renameConversation,
+    toggleSidebar,
+    setSidebarCollapsed,
+    setSidebarWidth,
+    setSearchOpen
+} = conversation.actions;
 
 export default conversation.reducer;

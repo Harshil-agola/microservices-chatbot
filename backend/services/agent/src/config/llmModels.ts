@@ -10,7 +10,7 @@ const groqModel = new ChatGroq({
 
 const geminiModel = new ChatGoogle({
     apiKey: ENV_CONFIG.GOOGLE_API_KEY,
-    model: "gemini-2.5-flash"
+    model: "gemini-3.8-flash"
 });
 
 export const getModel = async (modelName: "router" | "chat" | "search" | "pdf" | "ppt" | "coding" | "vision") => {
@@ -20,15 +20,15 @@ export const getModel = async (modelName: "router" | "chat" | "search" | "pdf" |
         case "search":
             return groqModel;
         case "pdf":
-            return geminiModel;
+            return groqModel;
         case "ppt":
-            return geminiModel;
+            return groqModel;
         case "coding":
             return groqModel;
         case "vision":
-            return geminiModel;
+            return groqModel;
         case "router":
-            return geminiModel;
+            return groqModel;
         default:
             return groqModel;
     }
